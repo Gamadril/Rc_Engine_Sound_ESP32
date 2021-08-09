@@ -6,7 +6,6 @@
 
 #define NO_CABLIGHTS // The cablights step in the lights sequence is skipped, if defined
 //#define NO_FOGLIGHTS // The foglights step in the lights sequence is skipped, if defined
-#define THIRD_BRAKLELIGHT // if defined, pin 32 is used for a third brake light, otherwise for a trailer presence switch
 
 // All brightness values 0 - 255
 uint8_t sideLightsBrightness = 100; // Usually 200, 100 for WPL C44, 50 for Landy, 100 for P407

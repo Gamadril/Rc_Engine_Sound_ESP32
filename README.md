@@ -15,6 +15,7 @@ This version was stripped down and works only with the combination of specific c
 If you only interested in using the dashboard - read on.
 For the dashboard I used a cheap 0.96 80x160 pixel color LCD with SPI control.
 The graphics are drawn using the Arduino TFT_eSPI library - you have to install it using the Library Manager.
+To integrate the dashboard in your project copy the files `dashboard.h` and `dashboard.cpp` to your project folder and check the documentation in the header file.
 TFT_eSPI lib requires a display specific configuration to work, this process is described in the documentation.
 
 To summarize it:

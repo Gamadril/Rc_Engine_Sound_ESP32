@@ -1624,6 +1624,7 @@ void engineOnOff()
     //#endif
     lightsOn = true;
   }
+  // engine off on negative throttle in neutral gear and standing
   else if (neutralGear && currentSpeed == 0 && pulseWidth[3] < 1400)
   {
     engineOn = false;
@@ -2525,8 +2526,61 @@ void trailerPresenceSwitchRead()
   }
 }
 
+bool engineStartAnimation() {
+  static bool dirUp = true;
+  static uint16_t lastFrameTime = millis();
+  static uint16_t rpm = 0;
+  static uint16_t speed = 0;
+  static uint16_t fuel = 0;
+  static uint16_t adblue = 0;
+  static uint8_t currentStep = 0; // 50 in total
+
+  if(millis() - lastFrameTime > 7) {
+    dashboard.setSpeed(speed);
+    dashboard.setRPM(rpm);
+    dashboard.setFuelLevel(fuel);
+    dashboard.setAdBlueLevel(adblue);
+
+    speed += (dirUp ? 1 : -1) * (SPEED_MAX - SPEED_MIN) / 50;
+    rpm += (dirUp ? 1 : -1) * (RPM_MAX - RPM_MIN) / 50;
+    fuel += (dirUp ? 1 : -1) * (FUEL_MAX - FUEL_MIN) / 50;
+    adblue += (dirUp ? 1 : -1) * (ADBLUE_MAX - ADBLUE_MIN) / 50;
+    currentStep = currentStep + (dirUp ? 1 : -1);
+
+    if (dirUp && currentStep == 50)
+    {
+      speed = SPEED_MAX;
+      rpm = RPM_MAX;
+      fuel = FUEL_MAX;
+      adblue = ADBLUE_MAX;
+      dirUp = false;
+    } else if (!dirUp && currentStep == 0) {
+      speed = 0;
+      rpm = 0;
+      fuel = 0;
+      adblue = 0;
+      dirUp = true;
+      return true;
+    }
+    
+    lastFrameTime = millis();
+  }
+
+  return false;
+}
+
 void updateDashboard()
 {
+  static bool startAnimationFinished = false;
+  if((engineState == STARTING || engineState == RUNNING) && !startAnimationFinished) {
+    startAnimationFinished = engineStartAnimation();
+    return;
+  } else if (engineState == STOPPING)
+  {
+    startAnimationFinished = false;
+  }
+  
+
   dashboard.setRPM(currentRpm);
   float speed = currentSpeed * 100 / manualGearRatios[selectedGear - 1];
   speed = map(speed, 0, RPM_MAX, 0, MAX_REAL_SPEED);

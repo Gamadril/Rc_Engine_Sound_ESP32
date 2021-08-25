@@ -32,3 +32,5 @@ In my setup I use following pins for the LCD board:
 - TFT_RST (RES pin on LCD board) - IO21 (my truck has no blue lights)
 
 Since the ESP32 is quite flexible in the choice of the pins for the SPI communication, try other unused pins of your board.
+
+[![Alt text](https://img.youtube.com/vi/GeKq4BlUX8M/0.jpg)](https://www.youtube.com/watch?v=GeKq4BlUX8M)
